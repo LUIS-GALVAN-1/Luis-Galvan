@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Medicamentos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input {
+            padding: 5px;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #resultado {
+            margin-top: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistema de Control de Medicamentos</h1>
+
+    <form id="medicamento-form">
+        <label for="medicamento1">Cantidad de Medicamento 1:</label>
+        <input type="number" id="medicamento1" name="medicamento1" required>
+        <label for="medicamento2">Cantidad de Medicamento 2:</label>
+        <input type="number" id="medicamento2" name="medicamento2" required>
+        <button type="submit">Iniciar</button>
+    </form>
+
+    <div id="paciente-form" style="display:none;">
+        <h2>Registro de Pacientes</h2>
+        <label for="sistolica">Presión Sistólica:</label>
+        <input type="number" id="sistolica" name="sistolica" required>
+        <label for="diastolica">Presión Diastólica:</label>
+        <input type="number" id="diastolica" name="diastolica" required>
+        <button type="button" onclick="registrarPaciente()">Registrar Paciente</button>
+    </div>
+
+    <div id="resultado">
+        <h2>Resultados</h2>
+        <p id="total-pacientes">Total de pacientes atendidos: 0</p>
+        <p id="medicamento1-entregados">Pacientes con Medicamento 1: 0 (0.00%)</p>
+        <p id="medicamento2-entregados">Pacientes con Medicamento 2: 0 (0.00%)</p>
+    </div>
+
+    <script>
+        let medicamento1 = 0;
+        let medicamento2 = 0;
+        let totalPacientes = 0;
+        let pacientesMedicamento1 = 0;
+        let pacientesMedicamento2 = 0;
+
+        document.getElementById('medicamento-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            medicamento1 = parseInt(document.getElementById('medicamento1').value);
+            medicamento2 = parseInt(document.getElementById('medicamento2').value);
+            document.getElementById('medicamento-form').style.display = 'none';
+            document.getElementById('paciente-form').style.display = 'block';
+        });
+
+        function registrarPaciente() {
+            const sistolica = parseInt(document.getElementById('sistolica').value);
+            const diastolica = parseInt(document.getElementById('diastolica').value);
+            let tipoMedicamento = 0;
+            let dosis = 0;
+
+            if (sistolica < 69 && diastolica < 48 && medicamento2 >= 6) {
+                tipoMedicamento = 2;
+                dosis = 6;
+                medicamento2 -= 6;
+                pacientesMedicamento2++;
+            } else if (sistolica >= 143 && sistolica < 177 && diastolica >= 92 && diastolica < 124 && medicamento1 >= 6) {
+                tipoMedicamento = 1;
+                dosis = 6;
+                medicamento1 -= 6;
+                pacientesMedicamento1++;
+            } else if (sistolica >= 177 && sistolica < 198 && diastolica >= 124 && diastolica < 142 && medicamento1 >= 10) {
+                tipoMedicamento = 1;
+                dosis = 10;
+                medicamento1 -= 10;
+                pacientesMedicamento1++;
+            } else if (sistolica >= 198 && sistolica < 246 && diastolica >= 142 && diastolica < 169 && medicamento1 >= 18) {
+                tipoMedicamento = 1;
+                dosis = 18;
+                medicamento1 -= 18;
+                pacientesMedicamento1++;
+            } else if (sistolica >= 246 && diastolica >= 169 && medicamento1 >= 35) {
+                tipoMedicamento = 1;
+                dosis = 35;
+                medicamento1 -= 35;
+                pacientesMedicamento1++;
+            } else if (sistolica >= 162 && diastolica < 86 && medicamento1 >= 17) {
+                tipoMedicamento = 1;
+                dosis = 17;
+                medicamento1 -= 17;
+                pacientesMedicamento1++;
+            }
+
+            totalPacientes++;
+            actualizarResultados();
+
+            if (medicamento1 <= 0 || medicamento2 <= 0) {
+                alert("Se han agotado los medicamentos.");
+                document.getElementById('paciente-form').style.display = 'none';
+            }
+        }
+
+        function actualizarResultados() {
+            document.getElementById('total-pacientes').textContent = `Total de pacientes atendidos: ${totalPacientes}`;
+            
+            const porcentajeMed1 = totalPacientes ? ((pacientesMedicamento1 / totalPacientes) * 100).toFixed(2) : 0.00;
+            const porcentajeMed2 = totalPacientes ? ((pacientesMedicamento2 / totalPacientes) * 100).toFixed(2) : 0.00;
+
+            document.getElementById('medicamento1-entregados').textContent = `Pacientes con Medicamento 1: ${pacientesMedicamento1} (${porcentajeMed1}%)`;
+            document.getElementById('medicamento2-entregados').textContent = `Pacientes con Medicamento 2: ${pacientesMedicamento2} (${porcentajeMed2}%)`;
+        }
+    </script>
+</body>
+</html>
